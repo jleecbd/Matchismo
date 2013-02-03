@@ -22,5 +22,6 @@
 
 @property(nonatomic, readonly) int score;
 @property(nonatomic, readonly, strong) NSString *flipResult;
+@property(nonatomic) int numberOfCardsToMatch;
 
 @end

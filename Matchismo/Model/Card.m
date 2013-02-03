@@ -16,7 +16,10 @@
     
     for (Card *card in otherCards) {
         if ([card.contents isEqualToString:self.contents]) {
-            score = 1;
+            score += 1;
+        } else
+        {
+            score = 0; //set to 0 if one of the cards in the supposedly matching set doesn't match.
         }
     }
     
