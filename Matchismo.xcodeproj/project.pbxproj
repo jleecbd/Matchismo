@@ -23,6 +23,7 @@
 		7A89E22016BA4F1A007B94CF /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A89E21F16BA4F1A007B94CF /* Deck.m */; };
 		7A89E22316BA4F50007B94CF /* PlayingCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A89E22216BA4F50007B94CF /* PlayingCard.m */; };
 		7A89E22616BA4F65007B94CF /* PlayingCardDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A89E22516BA4F65007B94CF /* PlayingCardDeck.m */; };
+		7AE4E20716BE50A300C62877 /* SimianCardBack.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7AE4E20616BE50A200C62877 /* SimianCardBack.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		7A89E22216BA4F50007B94CF /* PlayingCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayingCard.m; path = Model/PlayingCard.m; sourceTree = "<group>"; };
 		7A89E22416BA4F65007B94CF /* PlayingCardDeck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayingCardDeck.h; path = Model/PlayingCardDeck.h; sourceTree = "<group>"; };
 		7A89E22516BA4F65007B94CF /* PlayingCardDeck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayingCardDeck.m; path = Model/PlayingCardDeck.m; sourceTree = "<group>"; };
+		7AE4E20616BE50A200C62877 /* SimianCardBack.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SimianCardBack.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 		7A89E1FF16BA42E8007B94CF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				7AE4E20616BE50A200C62877 /* SimianCardBack.jpg */,
 				7A89E20016BA42E8007B94CF /* Matchismo-Info.plist */,
 				7A89E20116BA42E8007B94CF /* InfoPlist.strings */,
 				7A89E20416BA42E8007B94CF /* main.m */,
@@ -197,6 +200,7 @@
 				7A89E20D16BA42E8007B94CF /* Default@2x.png in Resources */,
 				7A89E20F16BA42E8007B94CF /* Default-568h@2x.png in Resources */,
 				7A89E21216BA42E9007B94CF /* MainStoryboard.storyboard in Resources */,
+				7AE4E20716BE50A300C62877 /* SimianCardBack.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
