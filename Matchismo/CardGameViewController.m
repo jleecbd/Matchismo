@@ -21,6 +21,7 @@
 @property (strong, nonatomic) CardMatchingGame *game;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *flipResultsLabel;
+@property (weak, nonatomic) IBOutlet UISlider *flipResultSlider;
 @end
 
 @implementation CardGameViewController
@@ -48,6 +49,14 @@
     _cardButtons = cardButtons;
     [self updateUI];
 }
+- (IBAction)scrollFlipHistory:(UISlider *)sender {
+    
+    self.flipResultsLabel.alpha = 0.3;
+    int flipResultIndex = round(sender.value);
+    if (flipResultIndex == 0) flipResultIndex = 1;
+    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", [self.game.flipResultHistory objectAtIndex: flipResultIndex-1]];
+    
+}
 -(void)updateUI
 {
     UIImage *cardBackImage = [UIImage imageNamed:@"SimianCardBack.jpg"];
@@ -66,7 +75,17 @@
         cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", self.game.flipResult];
+    if (self.game.flipResultHistory.count == 1)
+    {
+        self.flipResultSlider.maximumValue = 1;
+    } else
+    {
+        self.flipResultSlider.maximumValue = self.game.flipResultHistory.count;
+    }
+    
+    self.flipResultSlider.value = self.flipResultSlider.maximumValue;
+    self.flipResultsLabel.alpha = 1.0;
+    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", self.game.flipResultHistory.lastObject];
 }
 
 - (IBAction)flipCard:(UIButton *)sender {
@@ -80,6 +99,8 @@
     self.matchNumberButton.enabled = YES;
     self.game = nil;
     self.flipCount = 0;
+    self.flipResultSlider.maximumValue = 1;
+    self.flipResultSlider.value = 0;
     [self updateUI];
 }
 

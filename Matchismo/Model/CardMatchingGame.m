@@ -14,10 +14,17 @@
 @property(nonatomic) int score;
 @property(nonatomic, strong) NSString *flipResult;
 @property(nonatomic, strong) NSMutableArray *cardsToMatch;
+@property(nonatomic, strong) NSMutableArray *flipResultHistory;
 
 @end
 
 @implementation CardMatchingGame
+
+-(NSMutableArray *)flipResultHistory
+{
+    if(!_flipResultHistory) _flipResultHistory = [[NSMutableArray alloc] init];
+    return _flipResultHistory;
+}
 
 -(int) numberOfCardsToMatch
 {
@@ -129,6 +136,7 @@
             {
                 self.score -= MISMATCH_PENALTY;
                 self.flipResult = [NSString stringWithFormat:@"Sorry, the %@ doesn't match %@.  You have lost %d points", card.contents, [self createCardMatchMessageFrom: self.cardsToMatch], MISMATCH_PENALTY];
+                   [self.flipResultHistory addObject:self.flipResult];
                 for (Card *otherCard in self.cardsToMatch) {
                     otherCard.faceUp = NO;
                 }
@@ -142,14 +150,18 @@
                 }
                 self.score += matchScore * MATCH_BONUS;
                 self.flipResult = [NSString stringWithFormat:@"Successfully matched the %@ with %@ for %d points", card.contents, [self createCardMatchMessageFrom:self.cardsToMatch], (matchScore * MATCH_BONUS)];
-                
+                [self.flipResultHistory addObject:self.flipResult];
+                                
             }
             
         } else
         {
             self.flipResult = [NSString stringWithFormat:@"Flipped up the %@", card.contents];
+            [self.flipResultHistory addObject:self.flipResult];
+            
         }
-        
+    
+    
     }
 }
 
