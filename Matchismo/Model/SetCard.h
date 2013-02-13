@@ -10,4 +10,16 @@
 
 @interface SetCard : Card
 
+@property (nonatomic)NSUInteger rank;
+@property (nonatomic, strong)NSString *symbol;
+@property (nonatomic, strong)NSString *symbolColor;
+@property (nonatomic)NSString  *shading;
+@property (strong, nonatomic)NSString *contents;
+
++(NSArray *)validSymbols;
++(NSArray *)validColors;
++(NSArray *)validShadings;
+
+
+
 @end

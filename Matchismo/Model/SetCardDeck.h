@@ -10,4 +10,6 @@
 
 @interface SetCardDeck : Deck
 
+@property (nonatomic)int deckSize;
+
 @end
