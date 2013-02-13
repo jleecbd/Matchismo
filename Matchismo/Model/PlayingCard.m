@@ -32,11 +32,17 @@
     
     return score;
 }
+@synthesize contents = _contents;
+
 -(NSString *)contents
 {
+    if (!_contents) _contents = [[NSString alloc] init];
     NSArray *rankStrings = [PlayingCard rankStrings];
-    return [rankStrings[self.rank] stringByAppendingString:self.suit];
+    _contents = [rankStrings[self.rank] stringByAppendingString:self.suit];
+    
+    return _contents;
 }
+
 @synthesize suit = _suit;
 
 + (NSArray *)validSuits

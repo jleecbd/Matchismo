@@ -7,9 +7,21 @@
 //
 
 #import "PlayingCardDeck.h"
-#import "PlayingCard.h"
+
+
+@interface PlayingCardDeck()
+
+@property (strong, nonatomic) NSMutableArray *cards;
+
+@end
 
 @implementation PlayingCardDeck
+
+-(NSMutableArray *)cards
+{
+    if(!_cards) _cards = [[NSMutableArray alloc] init];
+    return _cards;
+}
 
 - (id)init
 {
@@ -29,5 +41,19 @@
     
     return self;
 }
+
+- (PlayingCard *)drawRandomCard
+{
+    PlayingCard *randomCard = nil;
+    
+    if (self.cards.count){
+        unsigned index = arc4random() % self.cards.count;
+        randomCard = self.cards[index];
+        [self.cards removeObjectAtIndex:index];
+    }
+    
+    return randomCard;
+}
+
 
 @end

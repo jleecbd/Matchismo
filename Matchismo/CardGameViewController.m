@@ -8,20 +8,23 @@
 
 #import "CardGameViewController.h"
 #import "PlayingCardDeck.h"
-#import "CardMatchingGame.h"
+#import "PlayingCardMatchingGame.h"
 
 @interface CardGameViewController ()
 
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *matchNumberButton;
-@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
+
 @property (nonatomic) int flipCount;
 
-@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *cardButtons;
 @property (strong, nonatomic) CardMatchingGame *game;
-@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property (weak, nonatomic) IBOutlet UILabel *flipResultsLabel;
-@property (weak, nonatomic) IBOutlet UISlider *flipResultSlider;
+
+
+@property (weak, nonatomic) IBOutlet UILabel *flipsLabel;
+@property (strong, nonatomic)UIImage *cardBackImage;
+
+@property (strong, nonatomic)NSMutableArray *flipResultHistory;
+
 @end
 
 @implementation CardGameViewController
@@ -29,12 +32,12 @@
 - (IBAction)changeMatchValue:(UISegmentedControl *)sender {
     
     self.game.numberOfCardsToMatch = sender.selectedSegmentIndex + 1;
-    NSLog(@"Number of cards to match is %d", self.game.numberOfCardsToMatch);
+    
 }
 
 - (CardMatchingGame *)game
 {
-    if (!_game) _game = [[CardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init]];
+    if (!_game) _game = [[PlayingCardMatchingGame alloc] initWithCardCount:self.cardButtons.count usingDeck:[[PlayingCardDeck alloc] init]];
     return _game;
     
 }
@@ -49,24 +52,39 @@
     _cardButtons = cardButtons;
     [self updateUI];
 }
+
+-(NSArray *)flipResultHistory {
+    
+    if(!_flipResultHistory) _flipResultHistory = [[NSMutableArray alloc] init];
+    return _flipResultHistory;
+    
+}
+
 - (IBAction)scrollFlipHistory:(UISlider *)sender {
     
     self.flipResultsLabel.alpha = 0.3;
     int flipResultIndex = round(sender.value);
     if (flipResultIndex == 0) flipResultIndex = 1;
-    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", [self.game.flipResultHistory objectAtIndex: flipResultIndex-1]];
+    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", [self.flipResultHistory objectAtIndex: flipResultIndex-1]];
     
+}
+-(UIImage *)cardBackImage {
+    if(!_cardBackImage) _cardBackImage = [UIImage imageNamed:@"SimianCardBack.jpg"];
+    return _cardBackImage;
 }
 -(void)updateUI
 {
-    UIImage *cardBackImage = [UIImage imageNamed:@"SimianCardBack.jpg"];
+     
     for (UIButton *cardButton in self.cardButtons) {
         Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
+        
         [cardButton setTitle:card.contents forState:UIControlStateSelected];
         [cardButton setTitle:card.contents forState: UIControlStateSelected|UIControlStateDisabled];
+                
+            
         cardButton.selected = card.isFaceUp;
         if (!cardButton.isSelected) {
-            [cardButton setBackgroundImage:cardBackImage forState:UIControlStateNormal];
+            [cardButton setBackgroundImage:self.cardBackImage forState:UIControlStateNormal];
         } else
         {
             [cardButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -75,24 +93,63 @@
         cardButton.alpha = card.isUnplayable ? 0.3 : 1.0;
     }
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
-    if (self.game.flipResultHistory.count == 1)
+    if (self.flipResultHistory.count == 1)
     {
         self.flipResultSlider.maximumValue = 1;
     } else
     {
-        self.flipResultSlider.maximumValue = self.game.flipResultHistory.count;
+        self.flipResultSlider.maximumValue = self.flipResultHistory.count;
     }
     
     self.flipResultSlider.value = self.flipResultSlider.maximumValue;
     self.flipResultsLabel.alpha = 1.0;
-    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", self.game.flipResultHistory.lastObject];
+    self.flipResultsLabel.text = [NSString stringWithFormat:@"Last Flip: %@", self.flipResultHistory.lastObject];
 }
+
+- (NSString *)getFlipResult {
+    
+    NSString *message;
+    Card *card = [self.game cardAtIndex:self.game.lastCardIndex];
+    if (self.game.lastEventWasMatchCheck) {
+        
+        if (self.game.lastMatchSuccess) {
+            
+            message = [NSString stringWithFormat:@"Successfully matched the %@ with %@ for %d points", card.contents, [self createCardMatchMessageFrom: self.game.cardsToMatch], self.game.scoreAdjust];
+            
+        } else
+        {
+            message = [NSString stringWithFormat:@"Sorry, the %@ doesn't match %@.  You have lost %d points", card.contents, [self createCardMatchMessageFrom: self.game.cardsToMatch], self.game.scoreAdjust];
+            
+            
+        }
+        
+        
+    } else {
+        
+        
+        if (card.isFaceUp){
+            message = [NSString stringWithFormat:@"Last Flip: Flipped up the %@", card.contents];
+        } else {
+            message = [NSString stringWithFormat:@"Last Flip: Flipped down the %@", card.contents];
+        }
+        
+        
+        
+    }
+    
+    return message;
+    
+}
+
+
 
 - (IBAction)flipCard:(UIButton *)sender {
     
     self.matchNumberButton.enabled = NO;
     [self.game flipCardAtIndex:[self.cardButtons indexOfObject:sender]];
     self.flipCount++;
+    NSString *message = [self getFlipResult];
+    [self.flipResultHistory addObject:message];
     [self updateUI];
 }
 - (IBAction)reDeal:(UIButton *)sender {
@@ -103,5 +160,33 @@
     self.flipResultSlider.value = 0;
     [self updateUI];
 }
+
+-(NSString *)createCardMatchMessageFrom:(NSArray *)cardArray
+{
+    
+    NSString *message = @"";
+    int counter = 1;
+    for (Card *otherCard in cardArray)
+    {
+        if (cardArray.count == 1){
+            message = [NSString stringWithFormat:@"the %@", otherCard.contents];
+        }
+        else if (counter == cardArray.count)
+        {
+            message = [NSString stringWithFormat:@"%@ and the %@", message, otherCard.contents];
+        } else if (cardArray.count == 2){
+            
+            message = [NSString stringWithFormat: @"%@ the %@", message, otherCard.contents];
+            
+        } else {
+            
+            message = [NSString stringWithFormat: @"%@ the %@,", message, otherCard.contents];
+        }
+        counter++;
+    }
+    
+    return message;
+}
+
 
 @end
