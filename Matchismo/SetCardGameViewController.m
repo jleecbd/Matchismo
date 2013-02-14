@@ -15,13 +15,20 @@
 #import "SetCard.h"
 
 @interface SetCardGameViewController ()
-
+@property (strong, nonatomic)NSString *gameName;
 @property (strong, nonatomic) SetCardGame *game;
 @property (strong, nonatomic)UIImage *cardBackImage;
 @property (strong, nonatomic)NSMutableArray *flipResultHistory;
 @end
 
 @implementation SetCardGameViewController
+
+-(NSString *)gameName
+{
+    if (!_gameName) _gameName = [[NSString alloc] init];
+    _gameName = @"Set Game";
+    return _gameName;
+}
 
 - (SetCardGame *)game
 {
@@ -64,7 +71,7 @@
     if (shadingText == @"None") {
         alphaValue = @0.0;
     } else if (shadingText == @"Partial"){
-        alphaValue = @0.5;
+        alphaValue = @0.3;
     } else if (shadingText == @"Full"){
         alphaValue = @1.0;
     }
@@ -107,7 +114,7 @@
     self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
     
     self.flipResultsLabel.attributedText = [self getFlipResult];
-
+    
 }
 
 
@@ -120,66 +127,66 @@
         message = [[NSMutableAttributedString alloc] initWithString:@"Last Flip:"];
     } else {
         
-    if (self.game.lastEventWasMatchCheck) {
-        
-        SetCard *card2 = [self.game.cardsToMatch objectAtIndex:0];
-        SetCard *card3 = [self.game.cardsToMatch objectAtIndex:1];
-
-        
-        if (self.game.lastMatchSuccess) {
+        if (self.game.lastEventWasMatchCheck) {
             
-            NSAttributedString *ampersandFrag = [[NSMutableAttributedString alloc] initWithString:@"&"];
+            SetCard *card2 = [self.game.cardsToMatch objectAtIndex:0];
+            SetCard *card3 = [self.game.cardsToMatch objectAtIndex:1];
             
             
-            message = [[NSMutableAttributedString alloc] initWithString: @"Successfully matched the "];
-            
-            [message appendAttributedString:[self getAttributedTextFor:card]];
-            [message appendAttributedString:ampersandFrag];
-            [message appendAttributedString:[self getAttributedTextFor:card2]];
-            [message appendAttributedString:ampersandFrag];
-            [message appendAttributedString:[self getAttributedTextFor:card3]];
-            [message appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@".  You have earned %d points", self.game.scoreAdjust]]];
-            
-        } else
-        {
-            
-            NSAttributedString *ampersandFrag = [[NSMutableAttributedString alloc] initWithString:@"&"];
-            
-            
-            message = [[NSMutableAttributedString alloc] initWithString: @"Sorry,  "];
-            
-            [message appendAttributedString:[self getAttributedTextFor:card]];
-            [message appendAttributedString:ampersandFrag];
-            [message appendAttributedString:[self getAttributedTextFor:card2]];
-            [message appendAttributedString:ampersandFrag];
-            [message appendAttributedString:[self getAttributedTextFor:card3]];
-            [message appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@" don't match."]];
-            [message appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"  You have lost %d points", self.game.scoreAdjust]]];
-            
-            
-        }
-        
-        
-    } else {
-        
-        if (card.isFaceUp){
-            
-            message = [[NSMutableAttributedString alloc] initWithString: @"Last Flip: Flipped up the "];
-            
-            [message appendAttributedString:[self getAttributedTextFor:card]];
+            if (self.game.lastMatchSuccess) {
+                
+                NSAttributedString *ampersandFrag = [[NSMutableAttributedString alloc] initWithString:@"&"];
+                
+                
+                message = [[NSMutableAttributedString alloc] initWithString: @"Successfully matched the "];
+                
+                [message appendAttributedString:[self getAttributedTextFor:card]];
+                [message appendAttributedString:ampersandFrag];
+                [message appendAttributedString:[self getAttributedTextFor:card2]];
+                [message appendAttributedString:ampersandFrag];
+                [message appendAttributedString:[self getAttributedTextFor:card3]];
+                [message appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@".  You have earned %d points", self.game.scoreAdjust]]];
+                
+            } else
+            {
+                
+                NSAttributedString *ampersandFrag = [[NSMutableAttributedString alloc] initWithString:@"&"];
+                
+                
+                message = [[NSMutableAttributedString alloc] initWithString: @"Sorry,  "];
+                
+                [message appendAttributedString:[self getAttributedTextFor:card]];
+                [message appendAttributedString:ampersandFrag];
+                [message appendAttributedString:[self getAttributedTextFor:card2]];
+                [message appendAttributedString:ampersandFrag];
+                [message appendAttributedString:[self getAttributedTextFor:card3]];
+                [message appendAttributedString:[[NSMutableAttributedString alloc] initWithString:@" don't match."]];
+                [message appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"  You have lost %d points", self.game.scoreAdjust]]];
+                
+                
+            }
             
             
         } else {
             
+            if (card.isFaceUp){
+                
+                message = [[NSMutableAttributedString alloc] initWithString: @"Last Flip: Flipped up the "];
+                
+                [message appendAttributedString:[self getAttributedTextFor:card]];
+                
+                
+            } else {
+                
+                
+                message = [[NSMutableAttributedString alloc] initWithString: @"Last Flip: Flipped down the "];
+                
+                [message appendAttributedString:[self getAttributedTextFor:card]];
+            }
             
-            message = [[NSMutableAttributedString alloc] initWithString: @"Last Flip: Flipped down the "];
             
-            [message appendAttributedString:[self getAttributedTextFor:card]];
+            
         }
-        
-        
-        
-     }
     }
     
     return message;

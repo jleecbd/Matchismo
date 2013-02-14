@@ -9,9 +9,11 @@
 #import "CardGameViewController.h"
 #import "PlayingCardDeck.h"
 #import "PlayingCardMatchingGame.h"
+#import "GameResult.h"
 
 @interface CardGameViewController ()
 
+@property (strong, nonatomic) NSString *gameName;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *matchNumberButton;
 
@@ -25,9 +27,23 @@
 
 @property (strong, nonatomic)NSMutableArray *flipResultHistory;
 
+@property (strong, nonatomic) GameResult *gameResult;
 @end
 
 @implementation CardGameViewController
+
+-(NSString *)gameName
+{
+    if (!_gameName) _gameName = [[NSString alloc] init];
+    _gameName = @"Playing Card Game";
+    return _gameName;
+}
+
+-(GameResult *)gameResult
+{
+    if(!_gameResult) _gameResult = [[GameResult alloc] init];
+    return _gameResult;
+}
 
 - (IBAction)changeMatchValue:(UISegmentedControl *)sender {
     
@@ -151,10 +167,13 @@
     NSString *message = [self getFlipResult];
     [self.flipResultHistory addObject:message];
     [self updateUI];
+    self.gameResult.score = self.game.score;
+    self.gameResult.gameName = self.gameName;
 }
 - (IBAction)reDeal:(UIButton *)sender {
     self.matchNumberButton.enabled = YES;
     self.game = nil;
+    self.gameResult = nil;
     self.flipCount = 0;
     self.flipResultSlider.maximumValue = 1;
     self.flipResultSlider.value = 0;
